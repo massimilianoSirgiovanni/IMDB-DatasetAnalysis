@@ -46,8 +46,8 @@ def addMovie(graph, movie, id):
 # Tests
 
 start_time = time.time()
-# graph = createGraph("prova.tsv")
-graph = createGraph("imdb-actors-actresses-movies.tsv")
+graph = createGraph("prova.tsv")
+#graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
