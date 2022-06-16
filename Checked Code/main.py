@@ -9,21 +9,6 @@ movieToIndex = {}   # Dictionary that return the index of a given movie
 
 indexToMovie = {}   # Dictionary that return the movie name for a given index
 
-years = {
-    '1900': [],
-    '1930': [],
-    '1940': [],
-    '1950': [],
-    '1960': [],
-    '1970': [],
-    '1980': [],
-    '1990': [],
-    '2000': [],
-    '2010': [],
-    '2020': []
-
-}
-
 
 
 def createGraph(fileName):
@@ -35,7 +20,6 @@ def createGraph(fileName):
         index = addActor(graph, textLine[0], index)
         index = addMovie(graph, textLine[1], index)
         graph.add_edge(actorToIndex[textLine[0]], movieToIndex[textLine[1]])    # Add an edge between actor and movie
-        print(extractYear(textLine[1]))
     file.close()
     return graph
 
@@ -58,12 +42,6 @@ def addMovie(graph, movie, id):
         id = id + 1
     return id   # If the movie is already in the dictionary the id won't change
 
-
-def extractYear(movie):
-    for i in range(0, len(movie)):
-        if movie[i] == "(" and movie[i+1] == '2' or movie[i+1] == '1':
-            return movie[i+1] + movie[i+2] + movie[i+3] + "0"
-    return 0
 
 # Tests
 
