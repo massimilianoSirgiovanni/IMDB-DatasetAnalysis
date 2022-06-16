@@ -19,7 +19,6 @@ def createGraph(fileName):
         index = addActor(graph, textLine[0], index)
         index = addMovie(graph, textLine[1], index)
         graph.add_edge(actorToIndex[textLine[0]], movieToIndex[textLine[1]])    # Add an edge between actor and movie
-        print(extractYear(textLine[1]))
     file.close()
     return graph
 
@@ -42,6 +41,7 @@ def addMovie(graph, movie, idMovie):
         year = extractYear(movie)
         years[year].append(idMovie)
         idMovie = idMovie + 1
+        print(year)
     return idMovie   # If the movie is already in the dictionary the id won't change
 
 
@@ -62,5 +62,15 @@ bruce = actorToIndex['Willis, Bruce']
 print(bruce)
 print(indexToActor[bruce])
 print(years)
-print(len(years["2000"]))
+
+
+print(meanForYear(1990))
+
+print(years[0])
+"""print(indexToMovie[1967])
+print(indexToMovie[18966])
+print(indexToMovie[53495])
+print(indexToMovie[93776])
+print(indexToMovie[123315])"""
+
 
