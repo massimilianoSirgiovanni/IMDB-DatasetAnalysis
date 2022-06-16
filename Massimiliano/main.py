@@ -48,6 +48,8 @@ def addMovie(graph, movie, idMovie):
 
 # Tests
 
+print(extractYear("Risto	Ilmojen ritari: Illu Juutilainen (1996)"))
+
 start_time = time.time()
 graph = createGraph("prova.tsv")
 #graph = createGraph("imdb-actors-actresses-movies.tsv")
