@@ -1,5 +1,6 @@
 years = {
     0 : [],     # Errors in data
+    1870: [],  # (1880, 1890]
     1880: [],   # (1880, 1890]
     1890: [],   # (1890, 1900]
     1900: [],   # (1890, 1910]
@@ -31,7 +32,7 @@ def meanForYear(x):
 
     x, sum, n = meanCheks(x)
 
-    while x > 1880:
+    while x > 1870:
         x = x - 10
         n = n + 10
         sum = sum + len(years[x])
@@ -41,7 +42,7 @@ def meanForYear(x):
 def meanCheks(x):
     if type(x) is str:
         x = int(x)
-    if x <= 1880:
+    if x <= 1870:
         return 0, 0, 1
 
     x = x - (x % 10)
