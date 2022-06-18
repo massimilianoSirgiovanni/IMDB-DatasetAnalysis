@@ -49,9 +49,8 @@ def actorParticFamousMovies(graph):
     max = -1    # Variable to store the id of the current
     sumMax = 0
     for i in indexToActor:  # Iterate on all actors
-        sum = 0
         neighbors = list(graph.neighbors(i))    # Get the neighbors list for the i-th actor
-        sum = sum + sumNeighborList(neighbors)  # Obtain the number of actor participating to each movie linked to i
+        sum = sumNeighborList(neighbors)  # Obtain the number of actor participating to each movie linked to i
         if sum > sumMax:    # Checking for the max value and the correspondent actor id
             sumMax = sum
             max = i
@@ -59,7 +58,7 @@ def actorParticFamousMovies(graph):
         return indexToActor[max]
     else:
         print("ERROR: NO ACTOR FOUND IN THE GRAPH")
-        return 0
+        return -1
 
 def sumNeighborList(listNodes):
     # Passing a list of nodes, it will return the sum of neighbors of each node
@@ -71,8 +70,6 @@ def sumNeighborList(listNodes):
 
 # Tests
 
-print(extractYear("Risto	Ilmojen ritari: Illu Juutilainen (1996)"))
-
 start_time = time.time()
 #graph = createGraph("prova.tsv")
 graph = createGraph("imdb-actors-actresses-movies.tsv")
@@ -80,19 +77,17 @@ end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
 
-
-print(meanForYear(1990))
-
+print(meanForYear(2030))
 print(years[0])
 
 start_time = time.time()
 print(actorParticFamousMovies(graph))
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
-"""print(indexToMovie[1967])
+print(indexToMovie[1967])
 print(indexToMovie[18966])
 print(indexToMovie[53495])
 print(indexToMovie[93776])
-print(indexToMovie[123315])"""
+print(indexToMovie[123315])
 
 
