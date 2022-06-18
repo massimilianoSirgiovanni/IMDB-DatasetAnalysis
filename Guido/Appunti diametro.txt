@@ -1,0 +1,62 @@
+DIAMETRO:
+
+
+
+-)Parto da un nodo a caso u (qui possiamo poi definire ottimizzazione per partire da nodo con grado max)
+-)Fai BFS a partire da u ------> Così trovi ecc(u) ed astrazione albero
+
+????Dubbio su scorrimento livelli da foglie a radice????
+
+-)Fai tante BFS di fila aggiornando così il lower bound (lb)
+-)Per corollario: se arrivo al livello "i" => ecc(u)=max{lb,2(i-1)}
+-)Se lb>=2(i-1) lb = diametro finale -----> da restituire
+
+
+
+
+IMPLEMENTAZIONE BFS del Prof:
+http://www.andreamarino.it/python/pythonds/Graphs/ImplementingBreadthFirstSearch.html
+
+
+from pythonds.graphs import Graph, Vertex
+from pythonds.basic import Queue
+
+def bfs(g,start):
+  start.setDistance(0)
+  start.setPred(None)
+  vertQueue = Queue()
+  vertQueue.enqueue(start)
+  while (vertQueue.size() > 0):
+    currentVert = vertQueue.dequeue()
+    for nbr in currentVert.getConnections():
+      if (nbr.getColor() == 'white'):
+        nbr.setColor('gray')
+        nbr.setDistance(currentVert.getDistance() + 1)
+        nbr.setPred(currentVert)
+        vertQueue.enqueue(nbr)
+    currentVert.setColor('black')
+
+
+Pseudo-codice:
+
+Algorithm 1: iFUB
+Input: A graph G, a node u
+Output: The diameter D
+i ← ecc(u);
+lb ← ecc(u);
+ub ← 2ecc(u);
+while ub > lb do
+if max{lb, Bi(u)} > 2(i − 1) then
+return max{lb, Bi(u)};
+else
+lb ← max{lb, Bi(u)};
+ub ← 2(i − 1);
+end
+i ← i − 1;
+end
+return lb
+
+
+
+
+
