@@ -1,3 +1,4 @@
+import networkx
 import networkx as nx
 import time
 from yearsFunctions import *
@@ -67,6 +68,17 @@ def sumNeighborList(listNodes):
         sum = sum + len(list(graph.neighbors(j)))
     return sum
 
+visitNodes = {}
+
+def ecc(nodes, level):
+    for i in nodes:
+        if i not in visitNodes:
+            visitNodes[i] = level
+            ecc(graph.neighbors(i), level + 1)
+        elif visitNodes[i] > level:
+            visitNodes[i] = level
+            ecc(graph.neighbors(i), level + 1)
+    return 0
 
 # Tests
 
@@ -84,10 +96,20 @@ start_time = time.time()
 print(actorParticFamousMovies(graph))
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
-print(indexToMovie[1967])
+'''print(indexToMovie[1967])
 print(indexToMovie[18966])
 print(indexToMovie[53495])
 print(indexToMovie[93776])
-print(indexToMovie[123315])
+print(indexToMovie[123315])'''
+'''start_time = time.time()
+ecc([0], 0)
+end_time = time.time()
+print(f"ECCENTRICITY TIME: {end_time-start_time}")
+max = 0
+for i in visitNodes:
+    if visitNodes[i] > max:
+        max = visitNodes[i]
+print(max)'''
+print(networkx.eccentricity(graph, 0))
 
 
