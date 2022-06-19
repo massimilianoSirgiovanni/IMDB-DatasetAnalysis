@@ -80,7 +80,7 @@ def nodeGradeMax(graph):
     
     for i in indexToActor:  # Iterate on all actors
         neighbors = list(graph.neighbors(i))    # Get the neighbors list for the i-th actor
-        sum = sumNeighborList(neighbors)  # Obtain the number of actor participating to each movie linked to i
+        sum = len(neighbors)  # Obtain the number of actor participating to each movie linked to i
         if sum > sumMax:    # Checking for the max value and the correspondent actor id
             sumMax = sum
             max = i
@@ -97,7 +97,7 @@ def nodeGradeMax(graph):
     
     for i in indexToMovie:  # Iterate on all actors
         neighbors = list(graph.neighbors(i))    # Get the neighbors list for the i-th actor
-        sum = sumNeighborList(neighbors)  # Obtain the number of actor participating to each movie linked to i
+        sum = len(neighbors)  # Obtain the number of actor participating to each movie linked to i
         if sum > sumMax:    # Checking for the max value and the correspondent actor id
             sumMax = sum
             max = i
@@ -164,9 +164,9 @@ def bfs(graph, startNode):
     nodeDistance = {}
     nodePred = {}
     
-    visitedNodes = []
+    #visitedNodes = []
     
-    # All'inizio tutti i sono nodi white
+    # All'inizio tutti i nodi sono white, distanza 0 e nessun predecessore
     for i in graph.nodes():
         nodeColor[i] = "w"
         nodeDistance[i] = 0
@@ -180,19 +180,32 @@ def bfs(graph, startNode):
     
     while vertQueue.size() > 0:
         currentVert = vertQueue.dequeue()
-        #neighbors = list(graph.neighbors(startNode))
-        neighbors = graph.neighbors(startNode)
-        visitedNodes.append(currentVert)
+        neighbors = list(graph.neighbors(currentVert))
+        #neighbors = graph.neighbors(startNode)
+        #visitedNodes.append(currentVert)
         
         
         for nbr in neighbors:
             if nodeColor[nbr] == 'w':
                 nodeColor[nbr] = 'g' # Colore grigio
-                nodeDistance[nbr] = nodeDistance[nbr] + 1
+                nodeDistance[nbr] = nodeDistance[currentVert] + 1
                 nodePred[nbr] = currentVert
                 vertQueue.enqueue(nbr)
         nodeColor[currentVert] = 'b' # Colore nero
-    print("BFS: ", visitedNodes, "Distanza: ")
+
+    #print("Dizionario distanze: ", nodeDistance)
+    return nodeDistance
+
+
+
+# Calcolo dell'eccentricità
+def eccentricity(graph, startNode):
+    distanceDictionary = bfs(graph, startNode)
+    maxEcc = max(distanceDictionary.values())
+    return maxEcc
+    
+
+    #print("BFS: ", visitedNodes, "Distanza: ")
     #print("BFS: ", vertQueue, "Distanza: ")
     # Il risultato è della forma: [nodo attuale, vicino1, vicino2, ...]
     
@@ -246,8 +259,8 @@ def graphDiameter(graph, startIndexNode):
 
 
 start_time = time.time()
-graph = createGraph("prova.tsv")
-#graph = createGraph("imdb-actors-actresses-movies.tsv")
+#graph = createGraph("prova.tsv")
+graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 
@@ -258,10 +271,14 @@ print("Grafo ", graph)
 ############## BFS ##############
 #################################
 
+#bfs(graph, 0)
+print("Valore eccentricità: ", eccentricity(graph, 4))
+
+
 
 # Test BFS sui primi 20 nodi:
-for k in range(20):
-    bfs(graph, k)
+#for k in range(20):
+ #   bfs(graph, k)
 
 
 #print(graphDiameter(graph, 3))
