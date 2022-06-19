@@ -68,23 +68,119 @@ def sumNeighborList(listNodes):
         sum = sum + len(list(graph.neighbors(j)))
     return sum
 
+
+###############################################
+
+def nodeGradeMax(graph):
+    maxN = -1  # Variable to store the id of the current
+    sumMax = 0
+
+    for i in indexToActor:
+        neighbors = list(graph.neighbors(i))
+        sumN = len(neighbors)
+        if sumN > sumMax:
+            sumMax = sumN
+            maxN = i
+
+    if maxN > -1:
+        selectedActor = maxN  # Attore con più vicini
+        actorNeighbors = sumMax  # Numero di vicini dell'attore
+    else:
+        print("ERROR: NO ACTORS FOUND IN THE GRAPH")
+        return -1
+
+    maxN = -1
+    sumMax = 0
+
+    for i in indexToMovie:
+        neighbors = list(graph.neighbors(i))
+        sumN = len(neighbors)
+        if sumN > sumMax:
+            sumMax = sumN
+            maxN = i
+
+    if maxN > -1:
+        selectedMovie = maxN  # Attore con più vicini
+        movieNeighbors = sumMax  # Numero di vicini dell'attore
+    else:
+        print("ERROR: NO ACTORS FOUND IN THE GRAPH")
+        return -1
+
+    if actorNeighbors >= movieNeighbors:
+        return selectedActor
+    else:
+        return selectedMovie
+
+
 visitNodes = {}
 
-def ecc(nodes, level):
-    for i in nodes:
-        if i not in visitNodes:
-            visitNodes[i] = level
-            ecc(graph.neighbors(i), level + 1)
-        elif visitNodes[i] > level:
-            visitNodes[i] = level
-            ecc(graph.neighbors(i), level + 1)
+
+def bfs(graph, startNode):
+    #nodeColor = {}
+    nodeDistance = {startNode: 0}
+
+    nodeColor = [startNode]
+    index = 0
+    max = 0
+
+    while index < len(nodeColor):
+        currentVert = nodeColor[index]
+        neighbors = list(graph.neighbors(currentVert))
+
+        for nbr in neighbors:
+            if nbr not in nodeDistance:
+                nodeColor.append(nbr)
+                nodeDistance[nbr] = nodeDistance[currentVert] + 1
+                if nodeDistance[nbr] > max:
+                    max = nodeDistance[nbr]
+        index = index + 1
+
+    return max
+
+
+# Calcolo dell'eccentricità
+def eccentricity(graph, startNode):
+    max = bfs(graph, startNode)
+    return max
+
+
+
+#############################################################################
+
+
+dictActor = {}
+
+def createActorGraph():
+    G = nx.Graph()
+    for i in indexToActor:
+        if i not in dictActor:
+            dictActor[i] = 0
+            G.add_node(i)
+        addCollaborators(G, i)
+
+    return G
+
+def addCollaborators(G, actor):
+    movies = graph.neighbors(actor)
+    for j in movies:
+        actors = graph.neighbors(j)
+        for p in actors:
+            if p != actor:
+                if p not in dictActor:
+                    dictActor[p] = 0
+                    G.add_node(p)
+                    G.add_edge(actor, p, weight=1)
+                #else:
+                    #G[actor][p]['weight'] = G[actor][p]['weight'] + 1
     return 0
+
+#############################################################################
 
 # Tests
 
 start_time = time.time()
-#graph = createGraph("prova.tsv")
-graph = createGraph("imdb-actors-actresses-movies.tsv")
+graph = createGraph("prova.tsv")
+#graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
@@ -101,15 +197,20 @@ print(indexToMovie[18966])
 print(indexToMovie[53495])
 print(indexToMovie[93776])
 print(indexToMovie[123315])'''
-'''start_time = time.time()
-ecc([0], 0)
+
+
+maxGradeNode = nodeGradeMax(graph)
+print(maxGradeNode)
+if maxGradeNode not in indexToMovie:
+    print(indexToActor[maxGradeNode])
+else:
+    print(indexToMovie[maxGradeNode])
+start_time = time.time()
+print("Valore eccentricità: ", eccentricity(graph, maxGradeNode))
 end_time = time.time()
-print(f"ECCENTRICITY TIME: {end_time-start_time}")
-max = 0
-for i in visitNodes:
-    if visitNodes[i] > max:
-        max = visitNodes[i]
-print(max)'''
-print(networkx.eccentricity(graph, 0))
+print(f"EXECUTION TIME: {end_time - start_time}")
 
 
+
+'''graph2 = createActorGraph()
+print(graph2.edges)'''

@@ -121,36 +121,24 @@ def nodeGradeMax(graph):
 
 def bfs(graph, startNode):
     #nodeColor = {}
-    nodeDistance = {}
+    nodeDistance = {startNode: 0}
 
-    nodeColor = {node: "w" for node in graph.nodes()}
-
-    # visitedNodes = []
-
-    # All'inizio tutti i nodi sono white, distanza 0 e nessun predecessore
-
-    # Inserimento primo vertice
-    # vertQueue = Queue()
-    # vertQueue.enqueue(startNode)
+    nodeColor = [startNode]
+    index = 0
     max = 0
 
-    for currentVert in nodeColor:
-        # currentVert = vertQueue.dequeue()
-        if currentVert not in nodeDistance:
-            nodeDistance[currentVert] = 0
+    while index < len(nodeColor):
+        currentVert = nodeColor[index]
         neighbors = list(graph.neighbors(currentVert))
 
         for nbr in neighbors:
-            #if nbr not in nodeDistance:
-            if nodeColor[nbr] == "w":
-                nodeColor[nbr] = 'g'  # Colore grigio
+            if nbr not in nodeDistance:
+                nodeColor.append(nbr)
                 nodeDistance[nbr] = nodeDistance[currentVert] + 1
                 if nodeDistance[nbr] > max:
                     max = nodeDistance[nbr]
-                #vertQueue.enqueue(nbr)
-        nodeColor[currentVert] = 'b'  # Colore nero
+        index = index + 1
 
-    # print("Dizionario distanze: ", nodeDistance)
     return max
 
 
@@ -202,29 +190,16 @@ print(f"EXECUTION TIME: {end_time - start_time}")
 # bfs(graph, 0)
 
 
-'''maxGradeNode = nodeGradeMax(graph)
+maxGradeNode = nodeGradeMax(graph)
+print(maxGradeNode)
 if maxGradeNode not in indexToMovie:
     print(indexToActor[maxGradeNode])
 else:
-    print(indexToMovie[maxGradeNode])'''
+    print(indexToMovie[maxGradeNode])
 start_time = time.time()
-print("Valore eccentricità: ", eccentricity(graph, 0))
+print("Valore eccentricità: ", eccentricity(graph, maxGradeNode))
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")
-
-# Test BFS sui primi 20 nodi:
-# for k in range(20):
-#   bfs(graph, k)
-
-
-# print(graphDiameter(graph, 3))
-
-
-# print(graph.number_of_nodes())
-
-# print(meanForYear(2000))
-# print(meanForYear(2030))
-# print(years[0])
 
 
 # Ese 3.4
