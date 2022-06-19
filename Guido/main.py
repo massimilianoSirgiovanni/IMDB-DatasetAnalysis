@@ -73,89 +73,53 @@ def sumNeighborList(listNodes):
 
 
 def nodeGradeMax(graph):
-    max = -1    # Variable to store the id of the current
+    maxN = -1    # Variable to store the id of the current
     sumMax = 0
     selectedActor = 0
     selectedMovie = 0
+    actorNeighbors = 0
+    movieNeighbors = 0
     
-    for i in indexToActor:  # Iterate on all actors
-        neighbors = list(graph.neighbors(i))    # Get the neighbors list for the i-th actor
-        sum = len(neighbors)  # Obtain the number of actor participating to each movie linked to i
-        if sum > sumMax:    # Checking for the max value and the correspondent actor id
-            sumMax = sum
-            max = i
     
-    if max > -1:
-        selectedActor = max
+    for i in indexToActor:
+        neighbors = list(graph.neighbors(i))
+        sumN = len(neighbors)
+        if sumN > sumMax:
+            sumMax = sumN
+            maxN = i
+    
+    if maxN > -1:
+        selectedActor = maxN  # Attore con più vicini
+        actorNeighbors = sumMax  # Numero di vicini dell'attore
     else:
         print("ERROR: NO ACTORS FOUND IN THE GRAPH")
         return -1
     
     
-    max = -1
+    maxN = -1
     sumMax = 0
     
-    for i in indexToMovie:  # Iterate on all actors
-        neighbors = list(graph.neighbors(i))    # Get the neighbors list for the i-th actor
-        sum = len(neighbors)  # Obtain the number of actor participating to each movie linked to i
-        if sum > sumMax:    # Checking for the max value and the correspondent actor id
-            sumMax = sum
-            max = i
+    for i in indexToMovie:
+        neighbors = list(graph.neighbors(i))
+        sumN = len(neighbors)
+        if sumN > sumMax:
+            sumMax = sumN
+            maxN = i
     
-    if max > -1:
-        selectedMovie = max
+    if maxN > -1:
+        selectedMovie = maxN  # Attore con più vicini
+        movieNeighbors= sumMax  # Numero di vicini dell'attore
     else:
-        print("ERROR: NO MOVIES FOUND IN THE GRAPH")
+        print("ERROR: NO ACTORS FOUND IN THE GRAPH")
         return -1
     
-    if selectedActor >= selectedMovie:
+    
+    if actorNeighbors >= movieNeighbors:
         return selectedActor
     else:
         return selectedMovie
-        
-    
 
 
-
-
-
-
-"""
-def bfs(graph, startNode):
-    distance = 0
-    pred = -1
-    vertQueue = Queue()
-    vertQueue.enqueue(startNode)
-    while (vertQueue.size() > 0):
-        currentVert = vertQueue.dequeue()
-
-    for nbr in currentVert.getConnections():
-      if (nbr.getColor() == 'white'):
-        nbr.setColor('gray')
-        nbr.setDistance(currentVert.getDistance() + 1)
-        nbr.setPred(currentVert)
-        vertQueue.enqueue(nbr)
-    currentVert.setColor('black')
-
-
-#neighbors = list(graph.neighbors(i))
-
-
-def bfs(graph, start):
-  start.setDistance(0)
-  start.setPred(None)
-  vertQueue = Queue()
-  vertQueue.enqueue(start)
-  while (vertQueue.size() > 0):
-    currentVert = vertQueue.dequeue()
-    for nbr in currentVert.getConnections():
-      if (nbr.getColor() == 'white'):
-        nbr.setColor('gray')
-        nbr.setDistance(currentVert.getDistance() + 1)
-        nbr.setPred(currentVert)
-        vertQueue.enqueue(nbr)
-    currentVert.setColor('black')
-"""
 
 
 def bfs(graph, startNode):
@@ -227,31 +191,7 @@ def graphDiameter(graph, startIndexNode):
     return 0
     
     
-    
-    
-    
-    
-    
-    """
-    actualDistance = 0
-    
-    startNode.setDistance(0)
-    startNode.setPred(None)
-    vertQueue = Queue()
-    vertQueue.enqueue(startNode)
 
-    while vertQueue.size() > 0:
-        currentVert = vertQueue.dequeue()
-        neighbors = graph.neighbors(startNode)
-
-        for nbr in neighbors:
-            if nbr.getColor() == 'white':
-                nbr.setColor('gray')
-                nbr.setDistance(currentVert.getDistance() + 1)
-                nbr.setPred(currentVert)
-                vertQueue.enqueue(nbr)
-        currentVert.setColor('black')
-"""
 
 # Tests
 
@@ -264,15 +204,26 @@ graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 
-print("Grafo ", graph)
+#print("Grafo ", graph)
 
 
 #################################
 ############## BFS ##############
 #################################
 
+
+#print("Nodo di grado massimo: ", nodeGradeMax(graph))
+
+maxGradeNode = nodeGradeMax(graph)
+
 #bfs(graph, 0)
-print("Valore eccentricità: ", eccentricity(graph, 4))
+
+start_time = time.time()
+print("Valore eccentricità: ", eccentricity(graph, maxGradeNode))
+end_time = time.time()
+print(f"EXECUTION TIME: {end_time-start_time}")
+
+
 
 
 
