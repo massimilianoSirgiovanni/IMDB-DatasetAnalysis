@@ -18,30 +18,32 @@ def createGraph(fileName):
     graph = nx.Graph()  # Graph Initialization
     for line in file:   # Scan the file line by line
         textLine = line.rstrip('\n').split('\t')    # Insert the couple (actor, movie) in a variable
-        index = addActor(graph, textLine[0], index)
-        index = addMovie(graph, textLine[1], index)
+        year = extractYear(textLine[1])
+        index = addActor(graph, textLine[0], index, year)
+        index = addMovie(graph, textLine[1], index, year)
         graph.add_edge(actorToIndex[textLine[0]], movieToIndex[textLine[1]])    # Add an edge between actor and movie
     file.close()
     return graph
 
 
-def addActor(graph, actor, idActor):
+def addActor(graph, actor, idActor, year):
     # Verify if actor is not in dictionaries, if so the method add it in the dictionary and in the graph
     if actor not in actorToIndex:
         actorToIndex[actor] = idActor
         indexToActor[idActor] = actor
         graph.add_node(idActor, bipartite=0)     # Create node for the actor
+        if idActor not in yearsActor[year]:
+            yearsActor[year].add(idActor)
         idActor = idActor + 1
     return idActor   # If the actor is already in the dictionary the id won't change
 
-def addMovie(graph, movie, idMovie):
+def addMovie(graph, movie, idMovie, year):
     # Verify if movie is not in dictionaries, if so the method add it in the dictionary and in the graph
     if movie not in movieToIndex:
         movieToIndex[movie] = idMovie
         indexToMovie[idMovie] = movie
         graph.add_node(idMovie, bipartite=1)   # Create node for the movie
-        year = extractYear(movie)
-        years[year].append(idMovie)
+        years[year].add(idMovie)
         idMovie = idMovie + 1
     return idMovie   # If the movie is already in the dictionary the id won't change
 
@@ -118,32 +120,24 @@ end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
 
-print(meanForYear(2030))
-print(years[0])
+'''print(meanForYear(2020))
+print(years[0])'''
 
-start_time = time.time()
+'''start_time = time.time()
 print(actorParticFamousMovies(graph))
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
-'''print(indexToMovie[1967])
+''''''print(indexToMovie[1967])
 print(indexToMovie[18966])
 print(indexToMovie[53495])
 print(indexToMovie[93776])
 print(indexToMovie[123315])'''
 
 
-maxGradeNode = nodeGradeMax(graph)
-print(maxGradeNode)
-if maxGradeNode not in indexToMovie:
-    print(indexToActor[maxGradeNode])
-else:
-    print(indexToMovie[maxGradeNode])
 start_time = time.time()
-print("Valore eccentricità: ", eccentricity(graph, maxGradeNode))
+diameter = diameterUpToYear(1980, graph)
+print(f"The Diameter is: {diameter}")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")
 
 
-
-graph2 = createActorGraph()
-print(graph2.edges)
