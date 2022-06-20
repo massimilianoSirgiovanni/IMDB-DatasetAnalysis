@@ -142,25 +142,19 @@ print(indexToMovie[123315])'''
 
 
 start_time = time.time()
-diameter = diameterUpToYear(1920, graph)
-print(f"The Diameter is: {diameter[0]}")
+diameter = diameterUpToYear(1980, graph)
+print(f"The Diameter is: {diameter}")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")
 
-print(f"Diametro con NX: {nx.diameter(diameter[1])}")
 
 
-
-'''start_time = time.time()
+start_time = time.time()
 graph2 = createActorGraph()
 end_time = time.time()
 print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph2[1][0]]} e {indexToActor[graph2[1][1]]}")
 print(f"Hanno collaborato {graph2[1][2]} volte")
 
-print(f"EXECUTION TIME: {end_time - start_time}")'''
-
-print(graph.degree[0])
-
-print(nx.shortest_path(graph, 0, 5))
+print(f"EXECUTION TIME: {end_time - start_time}")
 
 

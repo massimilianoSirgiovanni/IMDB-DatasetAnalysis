@@ -6,7 +6,7 @@ def diameterUpToYear(x, graph):
     graphYear = createGraphUpToYear(x, graph)
     maxGrade = nodeGradeMax(graphYear)
     diam = diameter(graphYear, maxGrade)
-    return diam, graphYear
+    return diam
 
 
 def nodeGradeMax(graph):
@@ -14,9 +14,10 @@ def nodeGradeMax(graph):
     sumMax = 0
 
     for i in graph.nodes:
-        degreeNode = graph.degree(i)
-        if degreeNode > sumMax:
-            sumMax = degreeNode
+        neighbors = list(graph.neighbors(i))
+        sumN = len(neighbors)
+        if sumN > sumMax:
+            sumMax = sumN
             maxN = i
     if maxN == -1:
         print("ERROR: NO NODE FOUND IN THE GRAPH")
@@ -61,34 +62,26 @@ def eccentricity(graph, startNode):
     return max
 
 
-def Bi(graph, node, lb, level):
+def Bi(graph, nodeList, lb):
     # maxEcc = (0,0)
-    '''for i in nodeList:
+    for i in nodeList:
         temp = eccentricity(graph, i)
 
         if temp[0] > lb:
             return temp[0]
 
-    return lb'''
-    for j in graph.nodes:
-        distance = len(nx.shortest_path(graph, node, j))
-        if distance == level:
-            ecc = nx.eccentricity(graph, j)
-            if ecc > lb:
-                return ecc
     return lb
 
 
-
 def diameter(graph, startNode):
-    ecc = nx.eccentricity(graph, startNode)
-    i = ecc
+    bfsTuple = eccentricity(graph, startNode)
+    i = bfsTuple[0]
     lb = i
     ub = 2 * lb
 
     while ub > lb:
 
-        bi = Bi(graph, startNode, lb, i)
+        bi = Bi(graph, bfsTuple[1][i], lb)
 
         if bi > 2 * (i - 1):
             return bi
