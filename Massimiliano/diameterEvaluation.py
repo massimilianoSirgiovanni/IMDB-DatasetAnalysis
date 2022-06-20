@@ -49,7 +49,11 @@ def bfs(graph, startNode):
 def eccentricity(graph, startNode):
     max = bfs(graph, startNode)
 
-def dinameter(graph, startNode):
-    i = eccentricity(graph, startNode)
-    
     return max
+
+def diameter(graph, startNode):
+    i = eccentricity(graph, startNode)
+
+    return i
+
+

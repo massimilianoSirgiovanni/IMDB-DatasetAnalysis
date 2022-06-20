@@ -1,8 +1,16 @@
 import networkx as nx
 import time
 from yearsFunctions import *
-from dictionaries import *
 from diameterEvaluation import *
+
+
+actorToIndex = {}   # Dictionary that return the index of a given actor
+
+indexToActor = {}   # Dictionary that return the actor name for a given index
+
+movieToIndex = {}   # Dictionary that return the index of a given movie
+
+indexToMovie = {}   # Dictionary that return the movie name for a given index
 
 def createGraph(fileName):
     file = open(fileName, "r")  # Open file
@@ -94,7 +102,9 @@ def addCollaborators(G, actor):
                     G.add_node(p)
                     G.add_edge(actor, p, weight=1)
                 #else:
-                    #G[actor][p]['weight'] = G[actor][p]['weight'] + 1
+                    # G[actor][p]['weight'] = G[actor][p]['weight'] + 1
+                    # if max[2] < G[actor][p]['weight']:
+                    #   max = [actor, p, G[actor][p]['weight']]
     return 0
 
 #############################################################################
@@ -102,8 +112,8 @@ def addCollaborators(G, actor):
 # Tests
 
 start_time = time.time()
-#graph = createGraph("prova.tsv")
-graph = createGraph("imdb-actors-actresses-movies.tsv")
+graph = createGraph("prova.tsv")
+#graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
@@ -135,5 +145,5 @@ print(f"EXECUTION TIME: {end_time - start_time}")
 
 
 
-'''graph2 = createActorGraph()
-print(graph2.edges)'''
+graph2 = createActorGraph()
+print(graph2.edges)
