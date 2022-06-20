@@ -84,17 +84,21 @@ def sumNeighborList(listNodes):
 dictActor = {}
 
 def createActorGraph():
+    max = (0, 0, 0)
     G = nx.Graph()
     for i in indexToActor:
         if i not in dictActor:
             dictActor[i] = 0
             G.add_node(i)
-        addCollaborators(G, i)
-
-    return G
+        tmp = addCollaborators(G, i)
+        if max[2] < tmp[2]:
+            max = tmp
+    max = (max[0], max[1], max[2]/2)
+    return (G, max)
 
 def addCollaborators(G, actor):
     movies = graph.neighbors(actor)
+    max = (0, 0, 0)
     for j in movies:
         actors = graph.neighbors(j)
         for p in actors:
@@ -103,19 +107,22 @@ def addCollaborators(G, actor):
                     dictActor[p] = 0
                     G.add_node(p)
                     G.add_edge(actor, p, weight=1)
-                #else:
-                    # G[actor][p]['weight'] = G[actor][p]['weight'] + 1
-                    # if max[2] < G[actor][p]['weight']:
-                    #   max = [actor, p, G[actor][p]['weight']]
-    return 0
+                elif G.has_edge(actor, p):
+                    G[actor][p]['weight'] = G[actor][p]['weight'] + 1
+                    if max[2] < G[actor][p]['weight']:
+                        max = (actor, p, G[actor][p]['weight'])
+                else:
+                    G.add_edge(actor, p, weight=1)
+
+    return max
 
 #############################################################################
 
 # Tests
 
 start_time = time.time()
-graph = createGraph("prova.tsv")
-#graph = createGraph("imdb-actors-actresses-movies.tsv")
+#graph = createGraph("prova.tsv")
+graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
@@ -138,6 +145,16 @@ start_time = time.time()
 diameter = diameterUpToYear(1980, graph)
 print(f"The Diameter is: {diameter}")
 end_time = time.time()
+print(f"EXECUTION TIME: {end_time - start_time}")
+
+
+
+start_time = time.time()
+graph2 = createActorGraph()
+end_time = time.time()
+print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph2[1][0]]} e {indexToActor[graph2[1][1]]}")
+print(f"Hanno collaborato {graph2[1][2]} volte")
+
 print(f"EXECUTION TIME: {end_time - start_time}")
 
 
