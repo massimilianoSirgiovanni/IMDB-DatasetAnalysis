@@ -32,7 +32,7 @@ def meanForYear(x):
 
     x, sum, n = meanCheks(x)
     
-    print(years)
+    #print(years)
 
     while x > 1870:
         x = x - 10
