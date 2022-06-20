@@ -1,15 +1,8 @@
-import networkx
 import networkx as nx
 import time
 from yearsFunctions import *
-
-actorToIndex = {}   # Dictionary that return the index of a given actor
-
-indexToActor = {}   # Dictionary that return the actor name for a given index
-
-movieToIndex = {}   # Dictionary that return the index of a given movie
-
-indexToMovie = {}   # Dictionary that return the movie name for a given index
+from dictionaries import *
+from diameterEvaluation import *
 
 def createGraph(fileName):
     file = open(fileName, "r")  # Open file
@@ -71,77 +64,7 @@ def sumNeighborList(listNodes):
 
 ###############################################
 
-def nodeGradeMax(graph):
-    maxN = -1  # Variable to store the id of the current
-    sumMax = 0
 
-    for i in indexToActor:
-        neighbors = list(graph.neighbors(i))
-        sumN = len(neighbors)
-        if sumN > sumMax:
-            sumMax = sumN
-            maxN = i
-
-    if maxN > -1:
-        selectedActor = maxN  # Attore con più vicini
-        actorNeighbors = sumMax  # Numero di vicini dell'attore
-    else:
-        print("ERROR: NO ACTORS FOUND IN THE GRAPH")
-        return -1
-
-    maxN = -1
-    sumMax = 0
-
-    for i in indexToMovie:
-        neighbors = list(graph.neighbors(i))
-        sumN = len(neighbors)
-        if sumN > sumMax:
-            sumMax = sumN
-            maxN = i
-
-    if maxN > -1:
-        selectedMovie = maxN  # Attore con più vicini
-        movieNeighbors = sumMax  # Numero di vicini dell'attore
-    else:
-        print("ERROR: NO ACTORS FOUND IN THE GRAPH")
-        return -1
-
-    if actorNeighbors >= movieNeighbors:
-        return selectedActor
-    else:
-        return selectedMovie
-
-
-visitNodes = {}
-
-
-def bfs(graph, startNode):
-    #nodeColor = {}
-    nodeDistance = {startNode: 0}
-
-    nodeColor = [startNode]
-    index = 0
-    max = 0
-
-    while index < len(nodeColor):
-        currentVert = nodeColor[index]
-        neighbors = list(graph.neighbors(currentVert))
-
-        for nbr in neighbors:
-            if nbr not in nodeDistance:
-                nodeColor.append(nbr)
-                nodeDistance[nbr] = nodeDistance[currentVert] + 1
-                if nodeDistance[nbr] > max:
-                    max = nodeDistance[nbr]
-        index = index + 1
-
-    return max
-
-
-# Calcolo dell'eccentricità
-def eccentricity(graph, startNode):
-    max = bfs(graph, startNode)
-    return max
 
 
 
@@ -179,8 +102,8 @@ def addCollaborators(G, actor):
 # Tests
 
 start_time = time.time()
-graph = createGraph("prova.tsv")
-#graph = createGraph("imdb-actors-actresses-movies.tsv")
+#graph = createGraph("prova.tsv")
+graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph.number_of_nodes())
