@@ -12,9 +12,8 @@ def diameterUpToYear(x, graph):
 def nodeGradeMax(graph):
     maxN = -1  # Variable to store the id of the current
     sumMax = 0
-    giant = max(nx.connected_components(graph), key=len)
 
-    for i in giant:
+    for i in graph.nodes:
         neighbors = list(graph.neighbors(i))
         sumN = len(neighbors)
         if sumN > sumMax:
@@ -81,6 +80,7 @@ def diameter(graph, startNode):
     ub = 2 * lb
 
     while ub > lb:
+
         bi = Bi(graph, bfsTuple[1][i], lb)
 
         if bi > 2 * (i - 1):
