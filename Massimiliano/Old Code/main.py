@@ -2,6 +2,7 @@ import networkx as nx
 import time
 from yearsFunctions import *
 from diameterEvaluation import *
+#from diameter2 import *
 
 
 actorToIndex = {}   # Dictionary that return the index of a given actor
@@ -121,12 +122,11 @@ def addCollaborators(G, actor):
 # Tests
 
 start_time = time.time()
-#graph = createGraph("prova.tsv")
+#graph = createGraph("prova2.tsv")
 graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
-print(graph.number_of_nodes())
-
+print(graph)
 '''print(meanForYear(2020))
 print(years[0])'''
 
@@ -140,21 +140,45 @@ print(indexToMovie[53495])
 print(indexToMovie[93776])
 print(indexToMovie[123315])'''
 
-
+x = 1930
 start_time = time.time()
-diameter = diameterUpToYear(1980, graph)
-print(f"The Diameter is: {diameter}")
+#diameter = diameterUpToYear(1920, graph)
+#print(f"The Diameter is: {diameter}")
+setYear = createGraphUpToYear(x, graph)
+end_time = time.time()
+print(f"EXECUTION TIME: {end_time - start_time}")
+start_time = time.time()
+maxGrade = nodeGradeMax(graph, setYear)
+if maxGrade in indexToActor:
+    print(indexToActor[maxGrade])
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")
 
 
 
+
 start_time = time.time()
+diameter = diameter(graph, maxGrade, setYear)
+print(f"The Diameter is: {diameter}")
+#print(f"Ecc con metodo nostro: {eccentricity(graphYear, list(graphYear.nodes)[0])[0]}")
+end_time = time.time()
+print(f"EXECUTION TIME: {end_time - start_time}")
+
+
+
+'''start_time = time.time()
+print(f"Ecc con metodo networkX: {nx.eccentricity(graphYear, list(graphYear.nodes)[0])}")
+end_time = time.time()
+print(f"EXECUTION TIME: {end_time - start_time}")'''
+
+
+
+'''start_time = time.time()
 graph2 = createActorGraph()
 end_time = time.time()
 print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph2[1][0]]} e {indexToActor[graph2[1][1]]}")
 print(f"Hanno collaborato {graph2[1][2]} volte")
 
-print(f"EXECUTION TIME: {end_time - start_time}")
+print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 

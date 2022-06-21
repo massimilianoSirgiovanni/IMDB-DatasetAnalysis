@@ -122,7 +122,7 @@ def addCollaborators(G, actor):
 # Tests
 
 start_time = time.time()
-#graph = createGraph("prova2.tsv")
+#graph = createGraph("prova.tsv")
 graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
@@ -140,11 +140,13 @@ print(indexToMovie[53495])
 print(indexToMovie[93776])
 print(indexToMovie[123315])'''
 
-x = 1930
+x = 1990
 start_time = time.time()
-#diameter = diameterUpToYear(1920, graph)
-#print(f"The Diameter is: {diameter}")
-setYear = createGraphUpToYear(x, graph)
+diameter = diameterUpToYear(1920, graph)
+print(f"The Diameter is: {diameter}")
+
+
+'''setYear = createGraphUpToYear(x, graph)
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")
 start_time = time.time()
@@ -155,14 +157,18 @@ end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")
 
 
+doubSwNode = doubleSweep(graph, maxGrade, setYear)
+print(doubSwNode)
+
+
 
 
 start_time = time.time()
-diameter = diameter(graph, maxGrade, setYear)
+diameter = diameter(graph, doubSwNode, setYear)
 print(f"The Diameter is: {diameter}")
 #print(f"Ecc con metodo nostro: {eccentricity(graphYear, list(graphYear.nodes)[0])[0]}")
 end_time = time.time()
-print(f"EXECUTION TIME: {end_time - start_time}")
+print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 
 
@@ -180,5 +186,6 @@ print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph2
 print(f"Hanno collaborato {graph2[1][2]} volte")
 
 print(f"EXECUTION TIME: {end_time - start_time}")'''
+
 
 
