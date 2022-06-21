@@ -82,38 +82,50 @@ def sumNeighborList(listNodes):
 #############################################################################
 
 
-dictActor = {}
+'''def createActorGraphD():
+    dictActors = {}
+    max = (0, 0, 0)
+    for i in indexToActor:
+        if i not in dictActors:
+            dictActors[i] = set(graph.neighbors(i))
+        for j in indexToActor:
+            if j != i:
+                if j not in dictActors:
+                    dictActors[j] = set(graph.neighbors(j))
+                intersect = dictActors[i] & (dictActors[j])
+                if len(intersect) > max[2]:
+                    max = (i, j, len(intersect))
+    return max'''
+
 
 def createActorGraph():
     max = (0, 0, 0)
     G = nx.Graph()
     for i in indexToActor:
-        if i not in dictActor:
-            dictActor[i] = 0
+        if G.has_node(i) == False:
             G.add_node(i)
         tmp = addCollaborators(G, i)
         if max[2] < tmp[2]:
             max = tmp
-    max = (max[0], max[1], max[2]/2)
     return (G, max)
 
-def addCollaborators(G, actor):
+def addCollaborators(actorGraph, actor):
     movies = graph.neighbors(actor)
     max = (0, 0, 0)
     for j in movies:
         actors = graph.neighbors(j)
         for p in actors:
             if p != actor:
-                if p not in dictActor:
-                    dictActor[p] = 0
-                    G.add_node(p)
-                    G.add_edge(actor, p, weight=1)
-                elif G.has_edge(actor, p):
-                    G[actor][p]['weight'] = G[actor][p]['weight'] + 1
-                    if max[2] < G[actor][p]['weight']:
-                        max = (actor, p, G[actor][p]['weight'])
+                if actorGraph.has_node(p) == False:
+                    actorGraph.add_node(p)
+                    actorGraph.add_edge(actor, p, weight=0.5)
+                elif actorGraph.has_edge(actor, p):
+                    actorGraph[actor][p]['weight'] = actorGraph[actor][p]['weight'] + 0.5
+                    if max[2] < actorGraph[actor][p]['weight']:
+                        max = (actor, p, actorGraph[actor][p]['weight'])
                 else:
-                    G.add_edge(actor, p, weight=1)
+                    actorGraph.add_edge(actor, p, weight=0.5)
+
 
     return max
 
@@ -122,8 +134,8 @@ def addCollaborators(G, actor):
 # Tests
 
 start_time = time.time()
-#graph = createGraph("prova.tsv")
-graph = createGraph("imdb-actors-actresses-movies.tsv")
+graph = createGraph("prova2.tsv")
+#graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph)
@@ -140,10 +152,10 @@ print(indexToMovie[53495])
 print(indexToMovie[93776])
 print(indexToMovie[123315])'''
 
-x = 1990
+'''x = 2020
 start_time = time.time()
-diameter = diameterUpToYear(1920, graph)
-print(f"The Diameter is: {diameter}")
+diameter = diameterUpToYear(x, graph)
+print(f"The Diameter is: {diameter}")'''
 
 
 '''setYear = createGraphUpToYear(x, graph)
@@ -179,13 +191,13 @@ print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 
 
-'''start_time = time.time()
+start_time = time.time()
 graph2 = createActorGraph()
 end_time = time.time()
 print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph2[1][0]]} e {indexToActor[graph2[1][1]]}")
 print(f"Hanno collaborato {graph2[1][2]} volte")
 
-print(f"EXECUTION TIME: {end_time - start_time}")'''
+print(f"EXECUTION TIME: {end_time - start_time}")
 
 
 
