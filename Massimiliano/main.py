@@ -100,30 +100,43 @@ def sumNeighborList(listNodes):
 def createActorGraph():
     max = (0, 0, 0)
     G = nx.Graph()
+    visitedNodes = {}
     for i in indexToActor:
         if G.has_node(i) == False:
             G.add_node(i)
-        tmp = addCollaborators(G, i)
+        tmp = addCollaborators(G, i, visitedNodes)
+        visitedNodes[i] = 0
         if max[2] < tmp[2]:
             max = tmp
     return (G, max)
 
-def addCollaborators(actorGraph, actor):
+def addCollaborators(actorGraph, actor, visitedNodes):
+    dictEdge = {}
     movies = graph.neighbors(actor)
     max = (0, 0, 0)
     for j in movies:
         actors = graph.neighbors(j)
         for p in actors:
             if p != actor:
-                if actorGraph.has_node(p) == False:
-                    actorGraph.add_node(p)
-                    actorGraph.add_edge(actor, p, weight=0.5)
-                elif actorGraph.has_edge(actor, p):
-                    actorGraph[actor][p]['weight'] = actorGraph[actor][p]['weight'] + 0.5
-                    if max[2] < actorGraph[actor][p]['weight']:
-                        max = (actor, p, actorGraph[actor][p]['weight'])
-                else:
-                    actorGraph.add_edge(actor, p, weight=0.5)
+                tmp = 0
+                if p not in visitedNodes:
+                    if actorGraph.has_node(p) == False:
+                        actorGraph.add_node(p)
+                        actorGraph.add_edge(actor, p)
+                        dictEdge[f"({actor}, {p})"] = 1
+                    elif actorGraph.has_edge(actor, p):
+                        if f"({actor}, {p})" in dictEdge:
+                            tmp = dictEdge[f"({actor}, {p})"]
+                            dictEdge[f"({actor}, {p})"] = tmp + 1
+                        else:
+                            tmp = dictEdge[f"({p}, {actor})"]
+                            dictEdge[f"({p}, {actor})"] = tmp + 1
+                    else:
+                        actorGraph.add_edge(actor, p)
+                        dictEdge[f"({actor}, {p})"] = 1
+                    if max[2] < tmp + 1:
+                        max = (actor, p, tmp + 1)
+    #print(dictEdge)
     return max
 
 '''def createActorGraphMovie():
@@ -167,7 +180,9 @@ def linkActorsFromMovie(actorGraph, movie, dictEdge):
                 max = (actors[i], actors[j], tmp + 1)
     return max'''
 
-def createActorGraphMovie(graph):
+# IMPLEMENTAZIONE SOVRASCRITTURA DEL GRAFO
+
+'''def createActorGraphMovie(graph):
     max = (0, 0, 0)
     dictEdge = {}
     for movie in indexToMovie:
@@ -196,7 +211,7 @@ def linkActorsFromMovie(graph, movie, dictEdge):
                     dictEdge[f"({actors[j]}, {actors[i]})"] = tmp + 1
             if max[2] < tmp + 1:
                 max = (actors[i], actors[j], tmp + 1)
-    return max
+    return max'''
 
 
 #############################################################################
@@ -204,7 +219,7 @@ def linkActorsFromMovie(graph, movie, dictEdge):
 # Tests
 
 start_time = time.time()
-#graph = createGraph("prova2.tsv")
+#graph = createGraph("prova.tsv")
 graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
@@ -260,24 +275,24 @@ end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 
-'''start_time = time.time()
+start_time = time.time()
 graph2 = createActorGraph()
 end_time = time.time()
 print(graph2[0])
 print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph2[1][0]]} e {indexToActor[graph2[1][1]]}")
 print(f"Hanno collaborato {graph2[1][2]} volte")
 
-print(f"EXECUTION TIME: {end_time - start_time}")'''
+print(f"EXECUTION TIME: {end_time - start_time}")
 
 
-start_time = time.time()
+'''start_time = time.time()
 graph3 = createActorGraphMovie(graph)
 end_time = time.time()
 print(graph3[0])
 print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph3[1][0]]} e {indexToActor[graph3[1][1]]}")
 print(f"Hanno collaborato {graph3[1][2]} volte")
 
-print(f"EXECUTION TIME: {end_time - start_time}")
+print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 print(graph)
 
