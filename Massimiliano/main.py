@@ -2,7 +2,6 @@ import networkx as nx
 import time
 from yearsFunctions import *
 from diameterEvaluation import *
-#from diameter2 import *
 
 
 actorToIndex = {}   # Dictionary that return the index of a given actor
@@ -127,7 +126,7 @@ def addCollaborators(actorGraph, actor):
                     actorGraph.add_edge(actor, p, weight=0.5)
     return max
 
-def createActorGraphMovie():
+'''def createActorGraphMovie():
     max = (0, 0, 0)
     dictEdge = {}
     actorGraph = nx.Graph()
@@ -152,10 +151,41 @@ def linkActorsFromMovie(actorGraph, movie, dictEdge):
                 actorGraph.add_edge(actors[i], actors[j])
                 dictEdge[f"({actors[i]}, {actors[j]})"] = 1
             elif actorGraph.has_edge(actors[i], actors[j]) == False:
-                '''tmp = actorGraph[actors[i]][actors[j]]['weight']
-                actorGraph[actors[i]][actors[j]]['weight'] = tmp + 1
-            else:'''
+              #  tmp = actorGraph[actors[i]][actors[j]]['weight']
+             #   actorGraph[actors[i]][actors[j]]['weight'] = tmp + 1
+            #else:
                 actorGraph.add_edge(actors[i], actors[j])
+                dictEdge[f"({actors[i]}, {actors[j]})"] = 1
+            else:
+                if f"({actors[i]}, {actors[j]})" in dictEdge:
+                    tmp = dictEdge[f"({actors[i]}, {actors[j]})"]
+                    dictEdge[f"({actors[i]}, {actors[j]})"] = tmp + 1
+                else:
+                    tmp = dictEdge[f"({actors[j]}, {actors[i]})"]
+                    dictEdge[f"({actors[j]}, {actors[i]})"] = tmp + 1
+            if max[2] < tmp + 1:
+                max = (actors[i], actors[j], tmp + 1)
+    return max'''
+
+def createActorGraphMovie(graph):
+    max = (0, 0, 0)
+    dictEdge = {}
+    for movie in indexToMovie:
+        tmp = linkActorsFromMovie(graph, movie, dictEdge)
+        if max[2] < tmp[2]:
+            max = tmp
+    return (graph, max)
+
+
+def linkActorsFromMovie(graph, movie, dictEdge):
+    max = (0, 0, 0)
+    actors = list(graph.neighbors(movie))
+    graph.remove_node(movie)
+    for i in range(0, len(actors)):
+        for j in range(i + 1, len(actors)):
+            tmp = 0
+            if graph.has_edge(actors[i], actors[j]) == False:
+                graph.add_edge(actors[i], actors[j])
                 dictEdge[f"({actors[i]}, {actors[j]})"] = 1
             else:
                 if f"({actors[i]}, {actors[j]})" in dictEdge:
@@ -168,13 +198,14 @@ def linkActorsFromMovie(actorGraph, movie, dictEdge):
                 max = (actors[i], actors[j], tmp + 1)
     return max
 
+
 #############################################################################
 
 # Tests
 
 start_time = time.time()
-graph = createGraph("prova2.tsv")
-#graph = createGraph("imdb-actors-actresses-movies.tsv")
+#graph = createGraph("prova2.tsv")
+graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph)
@@ -229,7 +260,6 @@ end_time = time.time()
 print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 
-
 '''start_time = time.time()
 graph2 = createActorGraph()
 end_time = time.time()
@@ -241,7 +271,7 @@ print(f"EXECUTION TIME: {end_time - start_time}")'''
 
 
 start_time = time.time()
-graph3 = createActorGraphMovie()
+graph3 = createActorGraphMovie(graph)
 end_time = time.time()
 print(graph3[0])
 print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph3[1][0]]} e {indexToActor[graph3[1][1]]}")
@@ -249,7 +279,7 @@ print(f"Hanno collaborato {graph3[1][2]} volte")
 
 print(f"EXECUTION TIME: {end_time - start_time}")
 
-print(len(indexToActor.keys()))
+print(graph)
 
 
 

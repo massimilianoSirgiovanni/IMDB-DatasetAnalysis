@@ -10,6 +10,9 @@ def diameterUpToYear(x, graph):
     end_time = time.time()
     print(f"EXECUTION TIME: {end_time - start_time}")
     start_time = time.time()
+    if len(setYear) == 0:
+        print(f"ERROR: There are no movies up to the year {x}")
+        return 0
     maxGrade = nodeGradeMax(graph, setYear)
     end_time = time.time()
     print(f"EXECUTION TIME: {end_time - start_time}")
