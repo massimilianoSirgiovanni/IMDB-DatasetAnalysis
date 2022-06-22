@@ -129,17 +129,18 @@ def addCollaborators(actorGraph, actor):
 
 def createActorGraphMovie():
     max = (0, 0, 0)
+    dictEdge = {}
     actorGraph = nx.Graph()
     for movie in indexToMovie:
-        #tmp =
-        linkActorsFromMovie(actorGraph, movie)
-        '''if max[2] < tmp[2]:
-            max = tmp'''
+        tmp = linkActorsFromMovie(actorGraph, movie, dictEdge)
+        if max[2] < tmp[2]:
+            max = tmp
+    print(dictEdge)
     return (actorGraph, max)
 
 
-def linkActorsFromMovie(actorGraph, movie):
-    #max = (0, 0, 0)
+def linkActorsFromMovie(actorGraph, movie, dictEdge):
+    max = (0, 0, 0)
     actors = list(graph.neighbors(movie))
     for i in range(0, len(actors)):
         if actorGraph.has_node(actors[i]) == False:
@@ -149,22 +150,31 @@ def linkActorsFromMovie(actorGraph, movie):
             if actorGraph.has_node(actors[j]) == False:
                 actorGraph.add_node(actors[j])
                 actorGraph.add_edge(actors[i], actors[j])
+                dictEdge[f"({actors[i]}, {actors[j]})"] = 1
             elif actorGraph.has_edge(actors[i], actors[j]) == False:
                 '''tmp = actorGraph[actors[i]][actors[j]]['weight']
                 actorGraph[actors[i]][actors[j]]['weight'] = tmp + 1
             else:'''
                 actorGraph.add_edge(actors[i], actors[j])
-            #if max[2] < tmp + 1:
-            #    max = (actors[i], actors[j], tmp + 1)
-    return 0
+                dictEdge[f"({actors[i]}, {actors[j]})"] = 1
+            else:
+                if f"({actors[i]}, {actors[j]})" in dictEdge:
+                    tmp = dictEdge[f"({actors[i]}, {actors[j]})"]
+                    dictEdge[f"({actors[i]}, {actors[j]})"] = tmp + 1
+                else:
+                    tmp = dictEdge[f"({actors[j]}, {actors[i]})"]
+                    dictEdge[f"({actors[j]}, {actors[i]})"] = tmp + 1
+            if max[2] < tmp + 1:
+                max = (actors[i], actors[j], tmp + 1)
+    return max
 
 #############################################################################
 
 # Tests
 
 start_time = time.time()
-# graph = createGraph("prova.tsv")
-graph = createGraph("imdb-actors-actresses-movies.tsv")
+graph = createGraph("prova2.tsv")
+#graph = createGraph("imdb-actors-actresses-movies.tsv")
 end_time = time.time()
 print(f"EXECUTION TIME: {end_time-start_time}")
 print(graph)
@@ -234,8 +244,8 @@ start_time = time.time()
 graph3 = createActorGraphMovie()
 end_time = time.time()
 print(graph3[0])
-#print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph3[1][0]]} e {indexToActor[graph3[1][1]]}")
-#print(f"Hanno collaborato {graph3[1][2]} volte")
+print(f"Gli attori che hanno collaborato maggiormente sono: {indexToActor[graph3[1][0]]} e {indexToActor[graph3[1][1]]}")
+print(f"Hanno collaborato {graph3[1][2]} volte")
 
 print(f"EXECUTION TIME: {end_time - start_time}")
 
