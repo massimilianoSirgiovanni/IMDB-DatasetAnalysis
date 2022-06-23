@@ -157,5 +157,3 @@ def diameter(graph, startNode, setNode):
         i = i - 1
 
     return lb
-
-

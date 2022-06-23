@@ -1,12 +1,26 @@
 import networkx as nx
-from yearsFunctions import createGraphUpToYear
+from yearsFunctions import createSetUpToYear
 import time
-
+from math import ceil
 
 def diameterUpToYear(x, graph):
-    setYear = createGraphUpToYear(x, graph)
+
+    start_time = time.time()
+    setYear = createSetUpToYear(x)
+    end_time = time.time()
+    print(f"EXECUTION TIME: {end_time - start_time}")
+    start_time = time.time()
+    if len(setYear) == 0:
+        print(f"ERROR: There are no movies up to the year {x}")
+        return 0
     maxGrade = nodeGradeMax(graph, setYear)
-    diam = diameter(graph, maxGrade)
+    end_time = time.time()
+    print(f"EXECUTION TIME: {end_time - start_time}")
+    start_time = time.time()
+    startNode = doubleSweep(graph, maxGrade, setYear)
+    end_time = time.time()
+    print(f"EXECUTION TIME: {end_time - start_time}")
+    diam = diameter(graph, startNode, setYear)
     return diam
 
 
@@ -26,8 +40,19 @@ def nodeGradeMax(graph, set):
         return maxN
 
 
+def doubleSweep(graph, node, set):
+    ecc = bfs(graph, node, set)
+    ecc2 = bfs(graph, ecc[1][ecc[0]][0], set)
+    print(ecc2[0])
+    R = ceil(ecc2[0]/2)
+    print(ecc2[2])
+    print(ecc2[2][R])
+    return ecc2[2][R]
+
+
 def bfs(graph, startNode, setNode):
-    dizionarioEsterno = {}
+    eccPath = {startNode: [startNode]}
+    distancesToNodes = {}
 
     nodeDistance = {startNode: 0}
 
@@ -42,19 +67,26 @@ def bfs(graph, startNode, setNode):
         for nbr in neighbors:
             if nbr in setNode:
                 if nbr not in nodeDistance:
+                    eccPath[nbr] = eccPath[currentVert].copy()
+                    eccPath[nbr].append(nbr)
                     nodeToVisit.append(nbr)
                     nodeDistance[nbr] = nodeDistance[currentVert] + 1
-                    if nodeDistance[nbr] not in dizionarioEsterno:
-                        dizionarioEsterno[nodeDistance[nbr]] = [nbr]
+                    if nodeDistance[nbr] not in distancesToNodes:
+                        distancesToNodes[nodeDistance[nbr]] = [nbr]
                     else:
-                        dizionarioEsterno[nodeDistance[nbr]].append(nbr)
+                        distancesToNodes[nodeDistance[nbr]].append(nbr)
 
                     if nodeDistance[nbr] > max:
                         max = nodeDistance[nbr]
         index = index + 1
+    '''print(eccPath)
+    print(len(eccPath)-1)'''
+    for i in eccPath:
+        if len(eccPath[i]) - 1 == max:
+            return (max, distancesToNodes, eccPath[i])
+    return 0
 
 
-    return (max, dizionarioEsterno)
 
 
 # Calcolo dell'eccentricità
@@ -66,10 +98,8 @@ def eccentricity(graph, startNode, set):
 
 #def Bi(graph, node, lb, level):
 def Bi(graph, nodeList, lb, set):
-    # maxEcc = (0,0)
     for i in nodeList:
         temp = eccentricity(graph, i, set)
-
         if temp[0] > lb:
             return temp[0]
 
@@ -116,7 +146,7 @@ def diameter(graph, startNode, setNode):
         start_time = time.time()
         bi = Bi(graph, bfsTuple[1][i], lb, setNode)
         end_time = time.time()
-        print(f"Bi() at {i} level TIME: {end_time - start_time}")
+        print(f"Bi() at {i} level TIME: {end_time - start_time}: with {bi}")
 
 
         if bi > 2 * (i - 1):

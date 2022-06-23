@@ -100,18 +100,12 @@ def addActorsFromMovie(movie, actorsDict, graph, newGraph):
             newGraph.add_edge(movie, j)
     return 0'''
 
-def createGraphUpToYear(x, graph):
+def createSetUpToYear(x):
     x = meanCheks(x)[0]
-    #if x == 2020:
-    #    giant = max(nx.connected_components(graph), key=len)
-    #    return graph.subgraph(giant)
     unionSet = set()
-    count = 0
     while x > 1870:
         x = x - 10
-        count = count + len(years[x]) + len(yearsActor[x])
         unionSet = unionSet.union(years[x])
         unionSet = unionSet.union(yearsActor[x])
-    print(count)
 
     return unionSet
