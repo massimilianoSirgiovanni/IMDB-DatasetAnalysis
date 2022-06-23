@@ -91,11 +91,13 @@ def meanCheks(x):
     return x, 0, 0
 
 
-# 
+# Creation of a common set that contains movies and actors up to the year x
 def createSetUpToYear(x):
-    x = meanCheks(x)[0]
+    
+    x = meanCheks(x)[0] # Preliminary checks
     unionSet = set()
-    while x > 1870:
+    
+    while x > 1870: # Creation of the set
         x = x - 10
         unionSet = unionSet.union(yearsMovie[x])
         unionSet = unionSet.union(yearsActor[x])
