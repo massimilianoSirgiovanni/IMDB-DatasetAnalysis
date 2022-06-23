@@ -43,8 +43,9 @@ yearsActor = {
 
 }
 
-# Function for extracting the year from each line of the file
+
 def extractYear(movie):
+# Function for extracting the year from each line of the file
     
     for i in range(len(movie)-6, -1, -1):  # Start from the tail of the string because the year is always after the name
     
@@ -54,14 +55,15 @@ def extractYear(movie):
             if movie[i+4] == "0":
                 return year - 10
             
-            return year - (year % 10)  # Return a string with the decade of the movie
+            return year - (year % 10)  # Return an integer with the decade of the movie
     
     return 0
 
 
-# Function for the average number of movies per year up to year x
-def averageForYear(x):
 
+def averageForYear(x):
+# Function for the average number of movies per year up to year x
+    
     x, yearSum, n = meanCheks(x) # Preliminary checks
     
     # Calculation of the components for the average
@@ -73,16 +75,21 @@ def averageForYear(x):
     return yearSum / n  # Calculation of the average
 
 
+
+def meanCheks(x):
 # Preliminary checks for the selected year x.
 # It must be a value between 1870 and 2030
-def meanCheks(x):
+
     if type(x) is str:
         x = int(x)
 
     if x <= 1870:
         return 0, 0, 1
 
-    x = x - (x % 10) # Calculation of the year's decade
+    if (x % 10) != 0:
+        tmp = x
+        x = x - (x % 10) # Calculation of the year's decade
+        print(f"ATTENTION: The year {tmp} is not a decade so it was transformed to {x}")
 
     if x >= 2030:
         print("ERROR: You can not insert a year over 2020")
@@ -91,13 +98,14 @@ def meanCheks(x):
     return x, 0, 0
 
 
-# Creation of a common set that contains movies and actors up to the year x
+
 def createSetUpToYear(x):
+# Creation of a common set that contains movies and actors up to the year x
     
     x = meanCheks(x)[0] # Preliminary checks
-    unionSet = set()
+    unionSet = set() # Creation of the set
     
-    while x > 1870: # Creation of the set
+    while x > 1870: # Initialization of the set
         x = x - 10
         unionSet = unionSet.union(yearsMovie[x])
         unionSet = unionSet.union(yearsActor[x])
