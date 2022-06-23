@@ -8,36 +8,36 @@ from math import ceil
 def diameterUpToYear(x, graph):
 
     start_time = time.time()
-    commonSetYear = createSetUpToYear(x) # Common set for movies and actors
+    setConsideredNodes = createSetUpToYear(x) # Common set for movies and actors
     end_time = time.time()
     print(f"EXECUTION TIME: {end_time - start_time}")
     
     # We find the node with maximum grade in the biggest connected component
     start_time = time.time()
-    if len(commonSetYear) == 0:
+    if len(setConsideredNodes) == 0:
         print(f"ERROR: There are no movies up to the year {x}")
         return 0
-    maxGrade = nodeWithMaxDegree(graph, commonSetYear)
+    maxGrade = nodeWithMaxDegree(graph, setConsideredNodes)
     end_time = time.time()
     print(f"EXECUTION TIME: {end_time - start_time}")
     
     # We use the 2-Sweep algorithm starting from the node with max grade
     start_time = time.time()
-    startNode = doubleSweep(graph, maxGrade, commonSetYear)
+    startNode = doubleSweep(graph, maxGrade, setConsideredNodes)
     end_time = time.time()
     print(f"EXECUTION TIME: {end_time - start_time}")
     
     # Diameter evaluation
-    diam = diameter(graph, startNode, commonSetYear)
+    diam = diameter(graph, startNode, setConsideredNodes)
     return diam
 
 
 # Function that searches for the node with maximum degree
-def nodeWithMaxDegree(graph, set):
+def nodeWithMaxDegree(graph, setConsideredNodes):
     
     maxNode = -1  # Variable to store the id of the current node
     maxDegree = 0 # Variable to store the current max degree
-    biggestComponent = max(nx.connected_components(graph.subgraph(set)), key=len) # It finds the largest connected component
+    biggestComponent = max(nx.connected_components(graph.subgraph(setConsideredNodes)), key=len) # It finds the largest connected component
     
     
     # For all nodes in the biggestComponent connected component we search the node with maximum grade
@@ -57,10 +57,10 @@ def nodeWithMaxDegree(graph, set):
 
 
 # 2-Sweep procedure
-def doubleSweep(graph, startNode, set):
+def doubleSweep(graph, startNode, setConsideredNodes):
     
-    startingEcc = bfs(graph, startNode, set) # Eccentricity of the starting node
-    dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0], set) # calculation of the 2-Sweep diameter
+    startingEcc = bfs(graph, startNode, setConsideredNodes) # Eccentricity of the starting node
+    dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0], setConsideredNodes) # calculation of the 2-Sweep diameter
     print(dSweepDiameter[0])
     centralNode = ceil(dSweepDiameter[0]/2) # The midpoint is found
     print(dSweepDiameter[2])
@@ -70,7 +70,7 @@ def doubleSweep(graph, startNode, set):
 
 
 # Bfs algorithm to find the eccentricity of a node
-def bfs(graph, startNode, setCCNode):
+def bfs(graph, startNode, setConsideredNodes):
     
     eccPath = {startNode: [startNode]}
     distancesToNodes = {} # To save all distance of nodes (dictionary of lists)
@@ -89,7 +89,7 @@ def bfs(graph, startNode, setCCNode):
 
         for nbr in neighbors: # the nodes become gray
             
-            if nbr in setCCNode: # if the each node is in the selected connected component
+            if nbr in setConsideredNodes: # if the each node is in the selected connected component
                 if nbr not in nodeDistance: # if the node is white
                 
                     # In this case we add nbr to the nodes path
@@ -119,17 +119,17 @@ def bfs(graph, startNode, setCCNode):
 
 
 # Calculation of eccentricity
-def eccentricity(graph, startNode, set):
-    max = bfs(graph, startNode, set)
+def eccentricity(graph, startNode, setConsideredNodes):
+    max = bfs(graph, startNode, setConsideredNodes)
 
     return max
 
 
 # Maximum eccentricity of nodes in the level i
-def eccBi(graph, nodeList, lb, set):
+def eccBi(graph, nodeList, lb, setConsideredNodes):
     
     for i in nodeList:
-        actualBiDistance = eccentricity(graph, i, set)
+        actualBiDistance = eccentricity(graph, i, setConsideredNodes)
         
         # Selection of max{lb, Bi(u)}
         if actualBiDistance[0] > lb:
@@ -139,9 +139,9 @@ def eccBi(graph, nodeList, lb, set):
 
 
 # Diameter of a connected component
-def diameter(graph, startNode, setCCNode):
+def diameter(graph, startNode, setConsideredNodes):
     start_time = time.time()
-    bfsTuple = eccentricity(graph, startNode, setCCNode)
+    bfsTuple = eccentricity(graph, startNode, setConsideredNodes)
     end_time = time.time()
     print(f"Compute bfsTuple TIME: {end_time - start_time}")
     
@@ -151,7 +151,7 @@ def diameter(graph, startNode, setCCNode):
 
     while ub > lb:
         start_time = time.time()
-        bi = eccBi(graph, bfsTuple[1][i], lb, setCCNode) # max{lb, Bi(u)}
+        bi = eccBi(graph, bfsTuple[1][i], lb, setConsideredNodes) # max{lb, Bi(u)}
         end_time = time.time()
         print(f"Bi() at {i} level TIME: {end_time - start_time}: with {bi}")
 
