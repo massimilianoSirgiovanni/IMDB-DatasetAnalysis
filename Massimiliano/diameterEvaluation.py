@@ -1,7 +1,7 @@
 import networkx as nx
 from yearsFunctions import createSetUpToYear
 import time
-from math import ceil
+from math import floor
 
 
 # Exercise 2.1
@@ -57,7 +57,7 @@ def doubleSweep(graph, startNode, setConsideredNodes):
     dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0],
                          setConsideredNodes)  # calculation of the 2-Sweep diameter
 
-    centralNode = ceil(dSweepDiameter[0] / 2)  # The midpoint is found
+    centralNode = floor(dSweepDiameter[0] / 2)  # The midpoint is found
 
     return dSweepDiameter[2][centralNode]
 
@@ -125,15 +125,16 @@ def eccentricity(graph, startNode, setConsideredNodes):
 
 def eccBi(graph, nodeList, lb, setConsideredNodes):
     # Maximum eccentricity of nodes in the level i
-
+    max = 0
     for node in nodeList:
         actualBiDistance = eccentricity(graph, node, setConsideredNodes)
 
         # Selection of max{lb, Bi(u)}
-        if actualBiDistance[0] > lb:
-            return actualBiDistance[0]
+        if actualBiDistance[0] > max: #lb:
+            #return \
+            max = actualBiDistance[0]
 
-    return lb
+    return max #lb
 
 
 def diameter(graph, startNode, setConsideredNodes):
@@ -152,8 +153,8 @@ def diameter(graph, startNode, setConsideredNodes):
         end_time = time.time()
         print(f"Bi() at {i} level TIME: {end_time - start_time}: with {bi}")
 
-        if bi > 2 * (i - 1):  # Stop condition
-            return bi
+        if max(lb, bi) > 2 * (i - 1):  # Stop condition
+            return max(lb, bi)
         else:
             lb = bi
             ub = 2 * (i - 1)

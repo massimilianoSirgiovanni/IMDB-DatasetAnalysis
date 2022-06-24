@@ -9,8 +9,8 @@ from graphConstruction import *
 print("-------START EXECUTION-------\n")
 print("0) GRAPH CONSTRUCTION --------------------------------------------------------------------------\n")
 start_time = time.time()
-graphImbd = createGraph("prova2.tsv")
-#graphImbd = createGraph("imdb-actors-actresses-movies.tsv")
+#graphImbd = createGraph("prova2.tsv")
+graphImbd = createGraph("imdb-actors-actresses-movies.tsv")
 print(graphImbd)
 construction_time = time.time()
 print(f"CONSTRUCTION TIME: {construction_time - start_time}\n")
@@ -31,7 +31,7 @@ print(f"SEARCH TIME: {search_end_time-search_start_time}\n")
 
 print("1) MEAN EVALUATION (EXERCISE 1.F) ---------------------------------------------------------------\n")
 
-X = [1900, 1920, 1950, 1980, 2020]
+X = [1900, 1920, 1950, 1990, 2020]
 
 for x in X:
     meanYear_start_time = time.time()
@@ -46,7 +46,7 @@ if len(yearsMovie[0]) != 0:
 
 print("2) DIAMETER EVALUATION (EXERCISE 2.1) -----------------------------------------------------------\n")
 
-X = [1900, 1920, 1950, 1980, 2020]
+X = [2000]
 
 for x in X:
     diameter_start_time = time.time()
@@ -58,7 +58,7 @@ for x in X:
 print("3) ACTOR WHO PARTICIPATED IN MOVIES WITH LARGEST NUMBER OF ACTORS (EXERCISE 3.IV) ---------------\n")
 
 actorPart_start_time = time.time()
-print(f"The actor who participated in movies with largest number of actors --> {actorParticFamousMovies(graphImbd)}")
+print(f"The actor who participated in movies with largest number of actors --> {actorParticipatingFamousMovies(graphImbd)}")
 actorPart_end_time = time.time()
 print(f"EXECUTION TIME: {actorPart_end_time-actorPart_start_time}\n")
 

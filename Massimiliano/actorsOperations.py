@@ -4,7 +4,7 @@ from graphConstruction import indexToActor
 
 # Exercise 3.IV
 
-def actorParticFamousMovies(graph):
+def actorParticipatingFamousMovies(graph):
     # Searching for the actor who participated in movies with largest number of actors
     maxId = -1    # Variable to store the id of the current max
     currentMax = 0
