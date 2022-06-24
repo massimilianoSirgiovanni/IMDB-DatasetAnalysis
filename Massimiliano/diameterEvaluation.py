@@ -18,10 +18,10 @@ def diameterUpToYear(x, graph):
     maxGrade = nodeWithMaxDegree(graph, setConsideredNodes)
 
     # Use the 2-Sweep algorithm starting from the node with max grade
-    startNode = doubleSweep(graph, maxGrade, setConsideredNodes)
+    startEcc = doubleSweep(graph, maxGrade, setConsideredNodes)
 
     # Diameter evaluation
-    diam = diameter(graph, startNode, setConsideredNodes)
+    diam = diameter(graph, startEcc, setConsideredNodes)
     return diam
 
 
@@ -54,16 +54,22 @@ def doubleSweep(graph, startNode, setConsideredNodes):
 
     startingEcc = bfs(graph, startNode, setConsideredNodes)  # Eccentricity of the starting node
 
-    dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0],
-                         setConsideredNodes)  # calculation of the 2-Sweep diameter
+    dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0], setConsideredNodes)  # calculation of the diameter
 
     centralNode = floor(dSweepDiameter[0] / 2)  # The midpoint is found
 
-    return dSweepDiameter[2][centralNode]
+    doubleSweepEcc = eccentricity(graph, dSweepDiameter[2][centralNode], setConsideredNodes)
+
+    if doubleSweepEcc[0] < startingEcc[0]:
+        return doubleSweepEcc
+    else:
+        return startingEcc
 
 
-def bfs(graph, startNode, setConsideredNodes):
+def bfs(graph, startNode, setConsideredNodes=0):
     # Bfs algorithm to find the eccentricity of a node
+    if setConsideredNodes == 0:
+        setConsideredNodes = set(graph.nodes)
 
     eccPath = {startNode: [startNode]}
     distanceToNodes = {}  # To save all distance of nodes (dictionary of lists)
@@ -87,16 +93,16 @@ def bfs(graph, startNode, setConsideredNodes):
                     # In this case we add nbr to the nodes path
                     eccPath[nbr] = eccPath[currentVert].copy()
                     eccPath[nbr].append(nbr)
-                    nodeToVisit.append(nbr)
-                    nodeToDistance[nbr] = nodeToDistance[currentVert] + 1  # the nodes become gray
+                    nodeToVisit.append(nbr)    # the nodes become gray
+                    nodeToDistance[nbr] = nodeToDistance[currentVert] + 1
 
                     # Add nbr to distanceToNodes
                     if nodeToDistance[nbr] not in distanceToNodes:
-                        distanceToNodes[nodeToDistance[nbr]] = [
-                            nbr]  # Create a list for nodes that have nodeToDistance[nbr] distance
+                        # Create a list for nodes that have nodeToDistance[nbr] distance
+                        distanceToNodes[nodeToDistance[nbr]] = [nbr]
                     else:
-                        distanceToNodes[nodeToDistance[nbr]].append(
-                            nbr)  # the node will be insert in the list of nodes with same distances
+                        # the node will be insert in the list of nodes with same distances
+                        distanceToNodes[nodeToDistance[nbr]].append(nbr)
 
                     # Update of maximum distance
                     if nodeToDistance[nbr] > actualMaxDistance:
@@ -123,33 +129,29 @@ def eccentricity(graph, startNode, setConsideredNodes):
     return bfs(graph, startNode, setConsideredNodes)
 
 
-def eccBi(graph, nodeList, lb, setConsideredNodes):
+def eccBi(graph, nodeList, setConsideredNodes):
     # Maximum eccentricity of nodes in the level i
-    max = 0
+    maxBi = 0
     for node in nodeList:
         actualBiDistance = eccentricity(graph, node, setConsideredNodes)
 
         # Selection of max{lb, Bi(u)}
-        if actualBiDistance[0] > max: #lb:
-            #return \
-            max = actualBiDistance[0]
+        if actualBiDistance[0] > maxBi:
+            maxBi = actualBiDistance[0]
 
-    return max #lb
+    return maxBi
 
 
-def diameter(graph, startNode, setConsideredNodes):
+def diameter(graph, startEcc, setConsideredNodes):
     # Diameter of a connected component
 
-    bfsTuple = eccentricity(graph, startNode, setConsideredNodes)
-    # bfsTuple = (eccentricity, distance dictionary, path with length equal to eccentricity)
-
-    i = bfsTuple[0]  # Eccentricity of starting node
+    i = startEcc[0]  # Eccentricity of starting node
     lb = i
     ub = 2 * lb
 
     while ub > lb:
         start_time = time.time()
-        bi = eccBi(graph, bfsTuple[1][i], lb, setConsideredNodes)  # max{lb, Bi(u)}
+        bi = eccBi(graph, startEcc[1][i], setConsideredNodes)  # max{lb, Bi(u)}
         end_time = time.time()
         print(f"Bi() at {i} level TIME: {end_time - start_time}: with {bi}")
 

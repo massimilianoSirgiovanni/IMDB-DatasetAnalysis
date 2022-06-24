@@ -1,7 +1,7 @@
 # Dictionary for movies
 yearsMovie = {
     0: set(),  # Errors in data
-    1870: set(),  # (1870, 1880]
+    1870: set(),  # [1880, 1880]
     1880: set(),  # (1880, 1890]
     1890: set(),  # (1890, 1900]
     1900: set(),  # (1890, 1910]
@@ -22,7 +22,7 @@ yearsMovie = {
 # Dictionary for actors
 yearsActor = {
     0: set(),  # Errors in data
-    1870: set(),  # (1870, 1880]
+    1870: set(),  # [1880, 1880]
     1880: set(),  # (1880, 1890]
     1890: set(),  # (1890, 1900]
     1900: set(),  # (1890, 1910]
@@ -44,8 +44,7 @@ yearsActor = {
 def extractYear(movie):
     # Function for extracting the year from each line of the file
 
-    for i in range(len(movie) - 6, -1,
-                   -1):  # Start from the tail of the string because the year is always after the name
+    for i in range(len(movie) - 6, -1, -1):  # Start from the tail of the string because the year is always after the name
 
         if movie[i] == "(" and (
                 movie[i + 1] == '2' or movie[i + 1] == '1'):  # Checking from the "(" to avoid situation like: (2003/II)
@@ -64,10 +63,13 @@ def extractYear(movie):
 def averageForYear(x):
     # Function for the average number of movies per year up to year x
 
-    x, yearSum, n = meanChecks(x)  # Preliminary checks
+    x, yearSum, n = averageChecks(x)  # Preliminary checks
+    if n == 0:                          # In the dictionary at 1870 label there is only one year
+        yearSum = len(yearsMovie[1870])
+        n = 1
 
     # Calculation of the components for the average
-    while x > 1870:
+    while x > 1880:
         x = x - 10
         n = n + 10
         yearSum = yearSum + len(yearsMovie[x])
@@ -75,7 +77,7 @@ def averageForYear(x):
     return yearSum / n  # Calculation of the average
 
 
-def meanChecks(x):
+def averageChecks(x):
     # Preliminary checks for the selected year x.
     # It must be a value between 1870 and 2030
 
@@ -101,7 +103,7 @@ def meanChecks(x):
 def createSetUpToYear(x):
     # Creation of a common set that contains movies and actors up to the year x
 
-    x = meanChecks(x)[0]  # Preliminary checks
+    x = averageChecks(x)[0]  # Preliminary checks
     unionSet = set()  # Creation of the set
 
     while x > 1870:  # Initialization of the set
