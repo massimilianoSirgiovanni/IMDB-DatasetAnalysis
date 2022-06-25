@@ -54,19 +54,31 @@ def doubleSweep(graph, startNode, setConsideredNodes):
 
     startingEcc = bfs(graph, startNode, setConsideredNodes)  # Eccentricity of the starting node
 
-    dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0], setConsideredNodes)  # calculation of the diameter
+    dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0], setConsideredNodes, pathsReturn=1)  # calculation of the diameter
 
+    return combinedChoice(dSweepDiameter, startingEcc, graph, setConsideredNodes)
+
+def combinedChoice(dSweepDiameter, gradeMaxEcc, graph, setConsideredNodes):
+    # Method linked to the doubleSweep() function
     centralNode = floor(dSweepDiameter[0] / 2)  # The midpoint is found
+    minEcc = gradeMaxEcc
+    print(f"Ecc path max grade --> {minEcc[0]} - {len(minEcc[1][minEcc[0]])}")
+    print(f"Diameter with 2-sweep: {dSweepDiameter[0]}")
+    lefts = len(dSweepDiameter[2])
+    for i in dSweepDiameter[2]:
+        lefts = lefts - 1
+        doubleSweepEcc = eccentricity(graph, i[centralNode], setConsideredNodes)
+        print(f"Ecc path --> {doubleSweepEcc[0]} - {len(doubleSweepEcc[1][doubleSweepEcc[0]])}")
+        if minEcc[0] > doubleSweepEcc[0] or (minEcc[0] == doubleSweepEcc[0] and len(doubleSweepEcc[1][doubleSweepEcc[0]]) < len(minEcc[1][minEcc[0]])):
+            minEcc = doubleSweepEcc
+            print("Change done!")
+        if lefts > len(minEcc[1][minEcc[0]]):
+            return minEcc
 
-    doubleSweepEcc = eccentricity(graph, dSweepDiameter[2][centralNode], setConsideredNodes)
-
-    if doubleSweepEcc[0] < startingEcc[0]:
-        return doubleSweepEcc
-    else:
-        return startingEcc
+    return minEcc
 
 
-def bfs(graph, startNode, setConsideredNodes=0):
+def bfs(graph, startNode, setConsideredNodes=0, pathsReturn=0):
     # Bfs algorithm to find the eccentricity of a node
     if setConsideredNodes == 0:
         setConsideredNodes = set(graph.nodes)
@@ -109,18 +121,20 @@ def bfs(graph, startNode, setConsideredNodes=0):
                         actualMaxDistance = nodeToDistance[nbr]
 
         index = index + 1  # the nodes become black
+    if pathsReturn == 1:
+        return (actualMaxDistance, distanceToNodes, searchPathAtGivenDistance(eccPath, actualMaxDistance))
 
-    return (actualMaxDistance, distanceToNodes, searchPathAtGivenDistance(eccPath, actualMaxDistance))
+    return (actualMaxDistance, distanceToNodes)
 
 
 def searchPathAtGivenDistance(dictDistances, distance):
     # Select a path with input distance from the dictionary
-
+    paths = []
     for i in dictDistances:
         if len(dictDistances[i]) - 1 == distance:
-            return dictDistances[i]
+            paths.append(dictDistances[i])
 
-    return 0
+    return paths
 
 
 def eccentricity(graph, startNode, setConsideredNodes):
@@ -129,12 +143,11 @@ def eccentricity(graph, startNode, setConsideredNodes):
     return bfs(graph, startNode, setConsideredNodes)
 
 
-def eccBi(graph, nodeList, setConsideredNodes):
+def eccBi(graph, nodeList, setConsideredNodes, lb):
     # Maximum eccentricity of nodes in the level i
-    maxBi = 0
+    maxBi = lb
     for node in nodeList:
         actualBiDistance = eccentricity(graph, node, setConsideredNodes)
-
         # Selection of max{lb, Bi(u)}
         if actualBiDistance[0] > maxBi:
             maxBi = actualBiDistance[0]
@@ -151,15 +164,15 @@ def diameter(graph, startEcc, setConsideredNodes):
 
     while ub > lb:
         start_time = time.time()
-        bi = eccBi(graph, startEcc[1][i], setConsideredNodes)  # max{lb, Bi(u)}
+        bi = eccBi(graph, startEcc[1][i], setConsideredNodes, lb)  # max{lb, Bi(u)}
         end_time = time.time()
         print(f"Bi() at {i} level TIME: {end_time - start_time}: with {bi}")
+        lb = max(lb, bi)
 
-        if max(lb, bi) > 2 * (i - 1):  # Stop condition
-            return max(lb, bi)
-        else:
-            lb = bi
-            ub = 2 * (i - 1)
+        if lb > 2 * (i - 1):  # Stop condition
+            return lb
+
+        ub = 2 * (i - 1)
         i = i - 1
 
     return lb

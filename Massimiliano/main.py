@@ -9,8 +9,8 @@ from graphConstruction import *
 print("-------START EXECUTION-------\n")
 print("0) GRAPH CONSTRUCTION --------------------------------------------------------------------------\n")
 start_time = time.time()
-graphImbd = createGraph("prova2.tsv")
-#graphImbd = createGraph("imdb-actors-actresses-movies.tsv")
+#graphImbd = createGraph("prova2.tsv")
+graphImbd = createGraph("imdb-actors-actresses-movies.tsv")
 print(graphImbd)
 construction_time = time.time()
 print(f"CONSTRUCTION TIME: {construction_time - start_time}\n")
@@ -31,7 +31,7 @@ print(f"SEARCH TIME: {search_end_time-search_start_time}\n")
 
 print("1) MEAN EVALUATION (EXERCISE 1.F) ---------------------------------------------------------------\n")
 
-X = [1900, 1920, 1950, 1990, 2020]
+X = [2020]
 
 for x in X:
     meanYear_start_time = time.time()
@@ -46,7 +46,7 @@ if len(yearsMovie[0]) != 0:
 
 print("2) DIAMETER EVALUATION (EXERCISE 2.1) -----------------------------------------------------------\n")
 
-X = [1920, 1930, 1940, 1950]
+X = [2010]
 
 for x in X:
     diameter_start_time = time.time()
