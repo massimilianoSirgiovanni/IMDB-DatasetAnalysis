@@ -45,7 +45,7 @@ if len(yearsMovie[0]) != 0:
     print(f"First movie found with no release year is: {indexToMovie[next(iter(yearsMovie[0]))]}\n")
 
 
-'''
+
 print("2) DIAMETER EVALUATION (EXERCISE 2.1) -----------------------------------------------------------\n")
 
 X = [2010]
@@ -85,7 +85,7 @@ print(f"ACTOR GRAPH CONSTRUCTION TIME: {actorGraph_end_time - actorGraph_start_t
 print("Original graph is:")
 print(graphImbd)
 print()
-'''
+
 end_time = time.time()
 print("-------END EXECUTION-------")
 print(f"TOTAL EXECUTION TIME: {end_time - start_time}")
