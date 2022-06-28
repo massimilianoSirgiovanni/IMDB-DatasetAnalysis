@@ -16,6 +16,10 @@ indexToMovie = {}   # Dictionary that return the movie name for a given index
 
 
 # Dictionary for movies
+
+lbYears = 1880      # Lower bound for the set of possible x (Cannot go below 1880 unless the dictionaries are changed)
+ubYears = 2020      # Upper bound for the set of possible x (Cannot go above 2020 unless the dictionaries are changed)
+
 yearsMovie = {
     0: set(),  # Errors in data
     1870: set(),  # [1880, 1880]
@@ -123,11 +127,11 @@ def averageForYear(x):
 
     x, yearSum, n = averageChecks(x)  # Preliminary checks
     if n == 0:                          # In the dictionary at 1870 label there is only one year
-        yearSum = len(yearsMovie[1870])
+        yearSum = len(yearsMovie[lbYears - 10])
         n = 1
 
     # Calculation of the components for the average
-    while x > 1880:
+    while x > lbYears:
         x = x - 10
         n = n + 10
         yearSum = yearSum + len(yearsMovie[x])
@@ -137,22 +141,22 @@ def averageForYear(x):
 
 def averageChecks(x):
     # Preliminary checks for the selected year x.
-    # It must be a value between 1870 and 2030
+    # It must be a value between lbYears and ubYears
 
     if type(x) is str:
         x = int(x)
 
-    if x <= 1870:
+    if x <= lbYears - 10:
+        return 0, 0, 1
+
+    if x >= ubYears + 10:
+        print("ERROR: You can not insert a year over 2020")
         return 0, 0, 1
 
     if (x % 10) != 0:
         tmp = x
         x = x - (x % 10)  # Calculation of the year's decade
         print(f"ATTENTION: The year {tmp} is not a decade so it was transformed to {x}")
-
-    if x >= 2030:
-        print("ERROR: You can not insert a year over 2020")
-        return 0, 0, 1
 
     return x, 0, 0
 
@@ -164,15 +168,12 @@ def createSetUpToYear(x):
     x = averageChecks(x)[0]  # Preliminary checks
     unionSet = set()  # Creation of the set
 
-    while x > 1870:  # Initialization of the set
+    while x >= lbYears:  # Initialization of the set
         x = x - 10
         unionSet = unionSet.union(yearsMovie[x])
         unionSet = unionSet.union(yearsActor[x])
 
     return unionSet
-
-
-
 
 
 # Exercise 2.1
@@ -233,13 +234,16 @@ def combinedChoice(dSweepDiameter, gradeMaxEcc, graph, setConsideredNodes):
     centralNode = floor(dSweepDiameter[0] / 2)  # The midpoint is found
     minEcc = gradeMaxEcc
     lefts = len(dSweepDiameter[2])
+    visitedNodes = {}
     for i in dSweepDiameter[2]:
+        if i[centralNode] not in visitedNodes:
+            visitedNodes[i[centralNode]] = 0
+            doubleSweepEcc = eccentricity(graph, i[centralNode], setConsideredNodes)
+            if minEcc[0] > doubleSweepEcc[0] or (minEcc[0] == doubleSweepEcc[0] and len(doubleSweepEcc[1][doubleSweepEcc[0]]) < len(minEcc[1][minEcc[0]])):
+                minEcc = doubleSweepEcc
+            if lefts > len(minEcc[1][minEcc[0]]):
+                return minEcc
         lefts = lefts - 1
-        doubleSweepEcc = eccentricity(graph, i[centralNode], setConsideredNodes)
-        if minEcc[0] > doubleSweepEcc[0] or (minEcc[0] == doubleSweepEcc[0] and len(doubleSweepEcc[1][doubleSweepEcc[0]]) < len(minEcc[1][minEcc[0]])):
-            minEcc = doubleSweepEcc
-        if lefts > len(minEcc[1][minEcc[0]]):
-            return minEcc
 
     return minEcc
 
@@ -344,9 +348,6 @@ def diameter(graph, startEcc, setConsideredNodes):
     return lb
 
 
-
-
-
 # Exercise 3.IV
 
 def actorParticipatingFamousMovies(graph):
@@ -441,6 +442,8 @@ def manageOneCollaboration(actor1, actor2, actorGraph, dictEdge):
 
     return tmp + 1
 
+
+# EXECUTION OUTPUT
 
 print("-------START EXECUTION-------\n")
 print("0) GRAPH CONSTRUCTION --------------------------------------------------------------------------\n")
