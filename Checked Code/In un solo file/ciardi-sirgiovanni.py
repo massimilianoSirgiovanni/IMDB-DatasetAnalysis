@@ -84,8 +84,7 @@ def addActor(graph, actor, idActor, year):
         indexToActor[idActor] = actor
         graph.add_node(idActor, bipartite=0)     # Create node for the actor
         idActor = idActor + 1
-    if actorToIndex[actor] not in yearsActor[year]:  # Add actor in years dictionary
-        yearsActor[year].add(actorToIndex[actor])
+    yearsActor[year].add(actorToIndex[actor])  # Add actor in years dictionary
     return idActor   # If the actor is already in the dictionary the id won't change
 
 def addMovie(graph, movie, idMovie, year):
@@ -94,7 +93,7 @@ def addMovie(graph, movie, idMovie, year):
         movieToIndex[movie] = idMovie     # Movie added in dictionaries
         indexToMovie[idMovie] = movie
         graph.add_node(idMovie, bipartite=1)    # Create node for the movie
-        yearsMovie[year].add(idMovie)                # Add actor in years dictionary
+        yearsMovie[year].add(idMovie)                # Add movie in years dictionary
         idMovie = idMovie + 1
     return idMovie   # If the movie is already in the dictionary the id won't change
 
