@@ -126,7 +126,7 @@ def averageForYear(x):
     # Function for the average number of movies per year up to year x
 
     x, yearSum, n = averageChecks(x)  # Preliminary checks
-    if n == 0:                          # In the dictionary at 1870 label there is only one year
+    if n == 0 and x == 1880:                          # In the dictionary at 1870 label there is only one year
         yearSum = len(yearsMovie[lbYears - 10])
         n = 1
 
@@ -146,7 +146,7 @@ def averageChecks(x):
     if type(x) is str:
         x = int(x)
 
-    if x <= lbYears - 10:
+    if x < lbYears - 10:
         return 0, 0, 1
 
     if x >= ubYears + 10:
@@ -239,11 +239,12 @@ def combinedChoice(dSweepDiameter, gradeMaxEcc, graph, setConsideredNodes):
         if i[centralNode] not in visitedNodes:
             visitedNodes[i[centralNode]] = 0
             doubleSweepEcc = eccentricity(graph, i[centralNode], setConsideredNodes)
-            if minEcc[0] > doubleSweepEcc[0] or (minEcc[0] == doubleSweepEcc[0] and len(doubleSweepEcc[1][doubleSweepEcc[0]]) < len(minEcc[1][minEcc[0]])):
+            if minEcc[0] > doubleSweepEcc[0] or \
+                    (minEcc[0] == doubleSweepEcc[0] and len(doubleSweepEcc[1][doubleSweepEcc[0]]) < len(minEcc[1][minEcc[0]])):
                 minEcc = doubleSweepEcc
-            if lefts > len(minEcc[1][minEcc[0]]):
-                return minEcc
         lefts = lefts - 1
+        if lefts > len(minEcc[1][minEcc[0]]):
+            return minEcc
 
     return minEcc
 
@@ -337,7 +338,7 @@ def diameter(graph, startEcc, setConsideredNodes):
         bi = eccBi(graph, startEcc[1][i], setConsideredNodes, lb)  # max{lb, Bi(u)}
         end_time = time.time()
         print(f"Bi() at {i} level TIME: {end_time - start_time}: with {bi}")
-        lb = max(lb, bi)
+        lb = bi
 
         if lb > 2 * (i - 1):  # Stop condition
             return lb
