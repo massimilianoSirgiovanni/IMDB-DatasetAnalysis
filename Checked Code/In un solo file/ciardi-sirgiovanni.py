@@ -223,7 +223,7 @@ def nodeWithMaxDegree(graph, consideredNodes):
 def doubleSweep(graph, startNode, setConsideredNodes):
     # 2-Sweep procedure
 
-    startingEcc = bfs(graph, startNode, setConsideredNodes)  # Eccentricity of the starting node
+    startingEcc = bfs(graph, startNode, setConsideredNodes, fringeReturn=1)  # Eccentricity of the starting node
 
     dSweepDiameter = bfs(graph, startingEcc[1][startingEcc[0]][0], setConsideredNodes, pathsReturn=1)  # calculation of the diameter
 
@@ -238,7 +238,7 @@ def combinedChoice(dSweepDiameter, gradeMaxEcc, graph, setConsideredNodes):
     for i in dSweepDiameter[2]:
         if i[centralNode] not in visitedNodes:
             visitedNodes[i[centralNode]] = 0
-            doubleSweepEcc = eccentricity(graph, i[centralNode], setConsideredNodes)
+            doubleSweepEcc = bfs(graph, i[centralNode], setConsideredNodes, fringeReturn=1)
             if minEcc[0] > doubleSweepEcc[0] or \
                     (minEcc[0] == doubleSweepEcc[0] and len(doubleSweepEcc[1][doubleSweepEcc[0]]) < len(minEcc[1][minEcc[0]])):
                 minEcc = doubleSweepEcc
@@ -249,7 +249,7 @@ def combinedChoice(dSweepDiameter, gradeMaxEcc, graph, setConsideredNodes):
     return minEcc
 
 
-def bfs(graph, startNode, setConsideredNodes=0, pathsReturn=0):
+def bfs(graph, startNode, setConsideredNodes=0, fringeReturn=0, pathsReturn=0):
     # Bfs algorithm to find the eccentricity of a node
     if setConsideredNodes == 0:
         setConsideredNodes = set(graph.nodes)
@@ -274,18 +274,20 @@ def bfs(graph, startNode, setConsideredNodes=0, pathsReturn=0):
                 if nbr not in nodeToDistance:  # if the node is white
 
                     # In this case we add nbr to the nodes path
-                    eccPath[nbr] = eccPath[currentVert].copy()
-                    eccPath[nbr].append(nbr)
+                    if pathsReturn == 1:
+                        eccPath[nbr] = eccPath[currentVert].copy()
+                        eccPath[nbr].append(nbr)
                     nodeToVisit.append(nbr)    # the nodes become gray
                     nodeToDistance[nbr] = nodeToDistance[currentVert] + 1
 
-                    # Add nbr to distanceToNodes
-                    if nodeToDistance[nbr] not in fringes:
-                        # Create a list for nodes that have nodeToDistance[nbr] distance
-                        fringes[nodeToDistance[nbr]] = [nbr]
-                    else:
-                        # the node will be insert in the fringe at distance nodeToDistance[nbr]
-                        fringes[nodeToDistance[nbr]].append(nbr)
+                    if fringeReturn == 1:
+                        # Add nbr to distanceToNodes
+                        if nodeToDistance[nbr] not in fringes:
+                            # Create a list for nodes that have nodeToDistance[nbr] distance
+                            fringes[nodeToDistance[nbr]] = [nbr]
+                        else:
+                            # the node will be insert in the fringe at distance nodeToDistance[nbr]
+                            fringes[nodeToDistance[nbr]].append(nbr)
 
                     # Update of maximum distance
                     if nodeToDistance[nbr] > actualMaxDistance:
@@ -488,7 +490,7 @@ if len(yearsMovie[0]) != 0:
 print("2) DIAMETER EVALUATION (EXERCISE 2.1) -----------------------------------------------------------\n")
 
 # Not all possible values as been added at X to avoid having too long execution times
-X = [1880, 1900, 1920, 1950, 2020]
+X = [1890, 1910, 1930, 1940, 1960]
 
 # However, it is possible to insert all the decades from 1880 to 2020, with different execution times
 # The execution times tend to be of the order of minutes or tens of minutes
