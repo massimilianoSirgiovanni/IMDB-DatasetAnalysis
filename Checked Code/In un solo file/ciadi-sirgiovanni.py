@@ -126,7 +126,7 @@ def averageForYear(x):
     # Function for the average number of movies per year up to year x
 
     x, yearSum, n = averageChecks(x)  # Preliminary checks
-    if n == 0 and x == 1880:                          # In the dictionary at 1870 label there is only one year
+    if n == 0 and lbYears == 1880:                          # In the dictionary at 1870 label there is only one year
         yearSum = len(yearsMovie[lbYears - 10])
         n = 1
 
@@ -146,7 +146,7 @@ def averageChecks(x):
     if type(x) is str:
         x = int(x)
 
-    if x < lbYears - 10:
+    if x <= lbYears - 10:
         return 0, 0, 1
 
     if x >= ubYears + 10:
